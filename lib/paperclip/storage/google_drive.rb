@@ -91,7 +91,7 @@ module Paperclip
             result = client.execute(
               :api_method => drive.files.delete,
               :parameters => parameters)
-            if result.status != 200
+            if [200, 204].exclude?(result.status)
               puts "An error occurred: #{result.data['error']['message']}"
             end
           end
@@ -156,7 +156,7 @@ module Paperclip
       def search_for_title(title)
         parameters = {
                 'folderId' => find_public_folder,
-                'q' => "title contains '#{title}'", # full_title
+                'q' => "title = '#{title}'", # full_title
                 'fields' => 'items/id'}
         client = google_api_client
         drive = client.discovered_api('drive', 'v2')
@@ -250,7 +250,5 @@ module Paperclip
           File.extname(original_filename)
         end
     end
-
   end
-
 end
